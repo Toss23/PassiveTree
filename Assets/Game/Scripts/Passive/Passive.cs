@@ -14,6 +14,7 @@ public class Passive
     private Modifier _modifier;
     private Passive[] _linkedPassives;
     private int _weight;
+    private bool _initialized;
 
     public string Index { get { return _index; } }
     public bool IsBase { get { return _isBase; } }
@@ -36,19 +37,24 @@ public class Passive
     // при отмене изучени€ пассивки
     public void Initialize()
     {
+        _initialized = true;
+
         // ѕервый проход чтобы задать веса св€занным пассивкам
         foreach (Passive passive in _linkedPassives)
         {
-            if (_isBase)
-                passive._weight = 1;
-            else if (passive._weight == 0 || _weight < passive._weight - 1)
-                passive._weight += _weight + 1;
+            if (passive.IsBase == false & passive._weight == 0)
+            {
+                if (_isBase)
+                    passive._weight = 1;
+                else
+                    passive._weight += _weight + 1;
+            }
         }
 
         // ¬торой проход чтобы св€занные пассивки задали веса своим св€занным пассивкам если это возможно
         foreach (Passive passive in _linkedPassives)
         {
-            if (passive.IsBase == false)
+            if (passive.IsBase == false & passive._initialized == false)
                 passive.Initialize();
         }
     }
@@ -87,20 +93,17 @@ public class Passive
 
     // ≈сли св€занные изученные пассивки имеют св€зи с пассивками меньшего веса, то можно забыть
     // Ёта проверка позвол€ет пон€ть разрушитьс€ ли св€зь между остальными пассивками и началом дерева
-    // Ѕудет работать даже если базовых пассивок больше 1
     public bool CanBeForgotten()
     {
         foreach (Passive passive in _linkedPassives)
         {
-            // ѕровер€ем пассивку
-            if (passive._isBase == false & passive._isLearned)
+            if (passive._isLearned & passive._weight > _weight)
             {
                 bool haveLinkWithBase = false;
 
-                // ѕроверем есть ли у св€занных изученных с ней пассивки св€зь с базовой
                 foreach (Passive linkedPassive in passive._linkedPassives)
                 {
-                    if (linkedPassive != passive & linkedPassive._isLearned & linkedPassive._weight < passive._weight)
+                    if (linkedPassive != this & linkedPassive._isLearned & linkedPassive._weight < passive._weight)
                     {
                         haveLinkWithBase = true;
                         break;

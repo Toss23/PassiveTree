@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class PassiveTree
 {
@@ -19,7 +18,8 @@ public class PassiveTree
     {
         foreach (Passive passive in _passives)
         {
-            passive.Initialize();
+            if (passive.IsBase)
+                passive.Initialize();
         }
     }
 
@@ -32,10 +32,8 @@ public class PassiveTree
 
     public void LearnPassive()
     {
-        Debug.Log("Try Learn");
         if (_selectedPassive != null && _selectedPassive.CanBeLearned())
         {
-            Debug.Log("Learn");
             if (_selectedPassive.IsBase)
             {
                 _character.AddModifier(_selectedPassive.Modifier);
@@ -54,8 +52,11 @@ public class PassiveTree
     {
         if (_selectedPassive != null && _selectedPassive.IsLearned)
         {
-            if (ForgotPassive(_selectedPassive))
+            if (_selectedPassive.CanBeForgotten())
             {
+                _selectedPassive.Forgot();
+                _character.AddSkillPoint(_selectedPassive.PointCost);
+                _character.RemoveModifier(_selectedPassive.Modifier);
                 _passivesLearned.Remove(_selectedPassive);
                 return true;
             }
@@ -70,18 +71,6 @@ public class PassiveTree
             HardForgotPassive(passive);
         }
         _passivesLearned.Clear();
-    }
-
-    private bool ForgotPassive(Passive passive)
-    {
-        if (passive.CanBeForgotten())
-        {
-            passive.Forgot();
-            _character.AddSkillPoint(passive.PointCost);
-            _character.RemoveModifier(passive.Modifier);
-            return true;
-        }
-        return false;
     }
 
     private void HardForgotPassive(Passive passive)

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PassiveTreeView : MonoBehaviour
+public class PassiveTreeView : MonoBehaviour, IPassiveTreeView
 {
     public event Action OnClickLearn;
     public event Action OnClickForgot;

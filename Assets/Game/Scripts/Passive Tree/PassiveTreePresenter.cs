@@ -1,10 +1,10 @@
 public class PassiveTreePresenter
 {
-    private PassiveTreeView _passiveTreeView;
+    private IPassiveTreeView _passiveTreeView;
     private PassiveTree _passiveTree;
     private PassivePresenter[] _passivePresenters;
 
-    public PassiveTreePresenter(PassiveTree passiveTree, PassiveTreeView passiveTreeView, PassivePresenter[] passivePresenters)
+    public PassiveTreePresenter(PassiveTree passiveTree, IPassiveTreeView passiveTreeView, PassivePresenter[] passivePresenters)
     {
         _passiveTreeView = passiveTreeView;
         _passiveTree = passiveTree;

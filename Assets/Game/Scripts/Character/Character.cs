@@ -12,7 +12,6 @@ public class Character
         _modifiers = new List<Modifier>();
     }
 
-    // ѕри более сложной реализации персонажа здесь были бы дополнительные проверки
     public void AddSkillPoint(int value)
     {
         _skillPoints += value;
