@@ -1,11 +1,17 @@
+using System;
 using System.Collections.Generic;
 
 public class PassiveTree
 {
+    public event Action<int> OnSkillPointsChanged;
+
     private Passive[] _passives;
     private Character _character;
     private Passive _selectedPassive;
     private List<Passive> _passivesLearned;
+    private int _skillPoints;
+
+    public int SkillPoints { get { return _skillPoints; } }
 
     public PassiveTree(Passive[] passives, Character character)
     {
@@ -39,7 +45,7 @@ public class PassiveTree
                 _character.AddModifier(_selectedPassive.Modifier);
                 _selectedPassive.Learn();
             }
-            else if (_character.RemoveSkillPoint(_selectedPassive.PointCost))
+            else if (RemoveSkillPoint(_selectedPassive.PointCost))
             {
                 _character.AddModifier(_selectedPassive.Modifier);
                 _passivesLearned.Add(_selectedPassive);
@@ -55,7 +61,7 @@ public class PassiveTree
             if (_selectedPassive.CanBeForgotten())
             {
                 _selectedPassive.Forgot();
-                _character.AddSkillPoint(_selectedPassive.PointCost);
+                AddSkillPoint(_selectedPassive.PointCost);
                 _character.RemoveModifier(_selectedPassive.Modifier);
                 _passivesLearned.Remove(_selectedPassive);
                 return true;
@@ -73,10 +79,27 @@ public class PassiveTree
         _passivesLearned.Clear();
     }
 
+    public void AddSkillPoint(int value)
+    {
+        _skillPoints += value;
+        OnSkillPointsChanged?.Invoke(_skillPoints);
+    }
+
+    public bool RemoveSkillPoint(int value)
+    {
+        if (_skillPoints - value >= 0)
+        {
+            _skillPoints -= value;
+            OnSkillPointsChanged?.Invoke(_skillPoints);
+            return true;
+        }
+        return false;
+    }
+
     private void HardForgotPassive(Passive passive)
     {
         passive.Forgot();
-        _character.AddSkillPoint(passive.PointCost);
+        AddSkillPoint(passive.PointCost);
         _character.RemoveModifier(passive.Modifier);
     }
 }

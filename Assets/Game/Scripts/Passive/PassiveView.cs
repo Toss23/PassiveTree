@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class PassiveView : MonoBehaviour, IPassiveView
 {
-    private Color _learnedColor = Color.green;
-    private Color _notLearnedColor = Color.white;
+    private readonly Color _learnedColor = Color.green;
+    private readonly Color _notLearnedColor = Color.white;
 
     public event Action OnClick;
 
@@ -17,7 +17,7 @@ public class PassiveView : MonoBehaviour, IPassiveView
 
     private void Awake()
     {
-        _button.onClick.AddListener(OnClickPassive);
+        _button.onClick.AddListener(OnClickView);
     }
 
     public void SetDisplayName(string displayName)
@@ -25,9 +25,17 @@ public class PassiveView : MonoBehaviour, IPassiveView
         _displayNameText.text = displayName;
     }
 
-    public void SetIconState(bool learned)
+    public void SetIconColor(IconColor iconColor)
     {
-        _iconImage.color = learned ? _learnedColor : _notLearnedColor;
+        switch (iconColor)
+        {
+            case IconColor.OnLearnedColor:
+                _iconImage.color = _learnedColor;
+                break;
+            case IconColor.OnNotLearnedColor:
+                _iconImage.color = _notLearnedColor;
+                break;
+        }
     }
 
     public void BordersActive(bool active)
@@ -35,7 +43,7 @@ public class PassiveView : MonoBehaviour, IPassiveView
         _bordersImage.gameObject.SetActive(active);
     }
 
-    private void OnClickPassive()
+    private void OnClickView()
     {
         OnClick?.Invoke();
     }

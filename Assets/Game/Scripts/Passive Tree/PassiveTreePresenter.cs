@@ -1,13 +1,13 @@
 public class PassiveTreePresenter
 {
-    private IPassiveTreeView _passiveTreeView;
     private PassiveTree _passiveTree;
-    private PassivePresenter[] _passivePresenters;
+    private IPassiveTreeView _passiveTreeView;
+    private IPassivePresenter[] _passivePresenters;
 
-    public PassiveTreePresenter(PassiveTree passiveTree, IPassiveTreeView passiveTreeView, PassivePresenter[] passivePresenters)
+    public PassiveTreePresenter(PassiveTree passiveTree, IPassiveTreeView passiveTreeView, IPassivePresenter[] passivePresenters)
     {
-        _passiveTreeView = passiveTreeView;
         _passiveTree = passiveTree;
+        _passiveTreeView = passiveTreeView;
         _passivePresenters = passivePresenters;
     }
 
@@ -18,9 +18,13 @@ public class PassiveTreePresenter
             passivePresenter.PassiveView.OnClick += () => OnClickPassive(passivePresenter.Passive);
         }
 
+        ChangeSkillPointText(_passiveTree.SkillPoints);
+
         _passiveTreeView.OnClickLearn += OnClickLearn;
         _passiveTreeView.OnClickForgot += OnClickForgot;
         _passiveTreeView.OnClickForgotAll += OnClickForgotAll;
+        _passiveTreeView.OnClickAddSkillPoint += AddSkillPassive;
+        _passiveTree.OnSkillPointsChanged += ChangeSkillPointText;
     }
 
     public void Disable()
@@ -33,6 +37,18 @@ public class PassiveTreePresenter
         _passiveTreeView.OnClickLearn -= OnClickLearn;
         _passiveTreeView.OnClickForgot -= OnClickForgot;
         _passiveTreeView.OnClickForgotAll -= OnClickForgotAll;
+        _passiveTreeView.OnClickAddSkillPoint -= AddSkillPassive;
+        _passiveTree.OnSkillPointsChanged -= ChangeSkillPointText;
+    }
+
+    private void ChangeSkillPointText(int skillPoints)
+    {
+        _passiveTreeView.SetSkillPointText(skillPoints + " Skill Points");
+    }
+
+    private void AddSkillPassive()
+    {
+        _passiveTree.AddSkillPoint(1);
     }
 
     private void OnClickPassive(Passive passive)

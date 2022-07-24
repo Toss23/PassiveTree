@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PassivePresenter : MonoBehaviour
+public class PassivePresenter : MonoBehaviour, IPassivePresenter
 {
     public static List<Passive> Passives { get; private set; }
 
@@ -11,8 +11,8 @@ public class PassivePresenter : MonoBehaviour
     private IPassiveView _passiveView;
     private Passive _passive;
 
-    public Passive Passive { get { return _passive; } }
     public IPassiveView PassiveView { get { return _passiveView; } }
+    public Passive Passive { get { return _passive; } }
 
     private void Awake()
     {
@@ -20,7 +20,7 @@ public class PassivePresenter : MonoBehaviour
         _passive = new Passive(_passiveData.Index, _passiveData.IsBase, _passiveData.PointCost, _passiveData.Modifier);
 
         if (Passives == null) Passives = new List<Passive>();
-        Passives.Add(_passive);
+        if (Passives.Contains(_passive) == false) Passives.Add(_passive);
     }
 
     public void Initialize()
@@ -63,12 +63,12 @@ public class PassivePresenter : MonoBehaviour
 
     private void OnPassiveLearned()
     {
-        _passiveView.SetIconState(true);
+        _passiveView.SetIconColor(IconColor.OnLearnedColor);
     }
 
     private void OnPassiveForgotten()
     {
-        _passiveView.SetIconState(false);
+        _passiveView.SetIconColor(IconColor.OnNotLearnedColor);
     }
 
     private void OnSelectPassive()
