@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class PassiveTree
 {
@@ -19,30 +19,33 @@ public class PassiveTree
     {
         foreach (Passive passive in _passives)
         {
-            if (passive.IsBase)
-                passive.Initialize();
+            passive.Initialize();
         }
     }
 
     public void SelectPassive(Passive passive)
     {
-        _selectedPassive.Deselect();
+        _selectedPassive?.Deselect();
         _selectedPassive = passive;
         _selectedPassive.Select();
     }
 
     public void LearnPassive()
     {
+        Debug.Log("Try Learn");
         if (_selectedPassive != null && _selectedPassive.CanBeLearned())
         {
+            Debug.Log("Learn");
             if (_selectedPassive.IsBase)
             {
                 _character.AddModifier(_selectedPassive.Modifier);
+                _selectedPassive.Learn();
             }
             else if (_character.RemoveSkillPoint(_selectedPassive.PointCost))
             {
                 _character.AddModifier(_selectedPassive.Modifier);
                 _passivesLearned.Add(_selectedPassive);
+                _selectedPassive.Learn();
             }
         }
     }

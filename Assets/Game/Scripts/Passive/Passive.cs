@@ -45,10 +45,11 @@ public class Passive
                 passive._weight += _weight + 1;
         }
 
-        // Второй проход чтобы связанные пассивки задали веса свои связанным пассивкам если это возможно
+        // Второй проход чтобы связанные пассивки задали веса своим связанным пассивкам если это возможно
         foreach (Passive passive in _linkedPassives)
         {
-            passive.Initialize();
+            if (passive.IsBase == false)
+                passive.Initialize();
         }
     }
 

@@ -26,6 +26,6 @@ public class GameController : MonoBehaviour
 
         // Создаем презентер для связи дерева с интерфейсом
         _passiveTreePresenter = new PassiveTreePresenter(_passiveTree, _passiveTreeView, _passivePresenters);
-        _passiveTreePresenter.Enable();       
+        _passiveTreePresenter.Enable();
     }
 }

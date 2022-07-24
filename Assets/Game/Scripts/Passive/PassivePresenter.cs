@@ -5,9 +5,10 @@ public class PassivePresenter : MonoBehaviour
 {
     public static List<Passive> Passives { get; private set; }
 
-    [SerializeField] private IPassiveView _passiveView;
+    [SerializeField] private PassiveView _passiveViewLink;
     [SerializeField] private PassiveData _passiveData;
 
+    private IPassiveView _passiveView;
     private Passive _passive;
 
     public Passive Passive { get { return _passive; } }
@@ -15,6 +16,7 @@ public class PassivePresenter : MonoBehaviour
 
     private void Awake()
     {
+        _passiveView = _passiveViewLink;
         _passive = new Passive(_passiveData.Index, _passiveData.IsBase, _passiveData.PointCost, _passiveData.Modifier);
 
         if (Passives == null) Passives = new List<Passive>();
@@ -38,11 +40,13 @@ public class PassivePresenter : MonoBehaviour
         }
 
         _passive.LinkedPassives = linkedPassives.ToArray();
+        if (_passive.IsBase) _passive.Learn();
     }
 
     public void Enable()
     {
         _passiveView.SetDisplayName(_passiveData.DisplayName);
+        _passiveView.BordersActive(false);
         _passive.OnLearned += OnPassiveLearned;
         _passive.OnForgotten += OnPassiveForgotten;
         _passive.OnSelect += OnSelectPassive;

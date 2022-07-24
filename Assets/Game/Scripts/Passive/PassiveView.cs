@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PassiveView : MonoBehaviour, IPassiveView
 {
     private Color _learnedColor = Color.green;
-    private Color _notLearnedColor = Color.gray;
+    private Color _notLearnedColor = Color.white;
 
     public event Action OnClick;
 
