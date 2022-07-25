@@ -16,7 +16,7 @@ public class PassiveView : MonoBehaviour, IPassiveView
 
     [SerializeField] private PassiveData _passiveData;
     [Space(10)]
-    [SerializeField] private Button _button;
+    [SerializeField] private Button _passiveButton;
     [SerializeField] private Image _iconImage;
     [SerializeField] private Image _bordersImage;
     [SerializeField] private TMP_Text _displayNameText;
@@ -32,7 +32,7 @@ public class PassiveView : MonoBehaviour, IPassiveView
         _passivePresenter.Initialize();
         _passivePresenter.Enable();
 
-        _button.onClick.AddListener(() => OnClick());
+        _passiveButton.onClick.AddListener(() => OnClick());
     }
 
     public void SetDisplayName(string displayName)

@@ -57,19 +57,15 @@ public class Passive
 
     public bool CanBeLearned(int haveSkillPoints)
     {
+        if (_isBase)
+            return false;
+
         if (_isLearned == false & haveSkillPoints >= _pointCost)
         {
-            if (_isBase)
+            foreach (Passive passive in _linkedPassives)
             {
-                return true;
-            }
-            else
-            {
-                foreach (Passive passive in _linkedPassives)
-                {
-                    if (passive.IsBase | passive.IsLearned)
-                        return true;
-                }
+                if (passive.IsBase | passive.IsLearned)
+                    return true;
             }
         }
         return false;
@@ -86,6 +82,7 @@ public class Passive
             {
                 List<Passive> previousPassives = new List<Passive>();
                 previousPassives.Add(this);
+
                 bool havePathToBase = HaveLinkWithBase(passive, previousPassives);
                 if (havePathToBase == false)
                     return false;

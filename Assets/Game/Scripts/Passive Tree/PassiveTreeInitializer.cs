@@ -13,7 +13,7 @@ public class PassiveTreeInitializer : MonoBehaviour
     private void Start()
     {
         _character = new Character();
-        _passiveTree = new PassiveTree(PassivePresenter.GetAllPassives(), _character);
+        _passiveTree = new PassiveTree(_character);
 
         _passiveTreePresenter = new PassiveTreePresenter(_passiveTree, _passiveTreeView, _passiveViews);
         _passiveTreePresenter.Enable();

@@ -21,7 +21,7 @@ public class PassiveTreePresenter
         _passiveTreeView.OnClickLearn += LearnSelectedPassive;
         _passiveTreeView.OnClickForgot += ForgotSelectedPassive;
         _passiveTreeView.OnClickForgotAll += ForgotAllPassives;
-        _passiveTreeView.OnClickAddSkillPoint += AddSkillPassive;
+        _passiveTreeView.OnClickAddSkillPoint += AddSkillPoint;
         _passiveTree.OnSkillPointsChanged += ChangeSkillPointsText;
         _passiveTree.OnSelectedPassiveChanged += ChangeSkillPointsCostText;
 
@@ -42,7 +42,7 @@ public class PassiveTreePresenter
         _passiveTreeView.OnClickLearn -= LearnSelectedPassive;
         _passiveTreeView.OnClickForgot -= ForgotSelectedPassive;
         _passiveTreeView.OnClickForgotAll -= ForgotAllPassives;
-        _passiveTreeView.OnClickAddSkillPoint -= AddSkillPassive;
+        _passiveTreeView.OnClickAddSkillPoint -= AddSkillPoint;
         _passiveTree.OnSkillPointsChanged -= ChangeSkillPointsText;
         _passiveTree.OnSelectedPassiveChanged -= ChangeSkillPointsCostText;
     }
@@ -60,7 +60,7 @@ public class PassiveTreePresenter
             _passiveTreeView.SetSkillPointsCostText("");
     }
 
-    private void AddSkillPassive()
+    private void AddSkillPoint()
     {
         _passiveTree.AddSkillPoint(1);
         UpdatePassiveTreeViewButtons(_passiveTree.SelectedPassive);

@@ -6,7 +6,6 @@ public class PassiveTree
     public event Action<int> OnSkillPointsChanged;
     public event Action<Passive> OnSelectedPassiveChanged;
 
-    private Passive[] _passives;
     private Character _character;
     private Passive _selectedPassive;
     private List<Passive> _passivesLearned;
@@ -15,9 +14,8 @@ public class PassiveTree
     public Passive SelectedPassive { get { return _selectedPassive; } }
     public int SkillPoints { get { return _skillPoints; } }
 
-    public PassiveTree(Passive[] passives, Character character)
+    public PassiveTree(Character character)
     {
-        _passives = passives;
         _character = character;
         _passivesLearned = new List<Passive>();
     }
@@ -41,12 +39,7 @@ public class PassiveTree
     {
         if (_selectedPassive != null && _selectedPassive.CanBeLearned(_skillPoints))
         {
-            if (_selectedPassive.IsBase)
-            {
-                _character.AddModifier(_selectedPassive.Modifier);
-                _selectedPassive.Learn();
-            }
-            else if (RemoveSkillPoint(_selectedPassive.PointCost))
+            if (RemoveSkillPoint(_selectedPassive.PointCost))
             {
                 _character.AddModifier(_selectedPassive.Modifier);
                 _passivesLearned.Add(_selectedPassive);

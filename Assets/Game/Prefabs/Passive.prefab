@@ -390,7 +390,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _passiveData: {fileID: 0}
-  _button: {fileID: 2127885465054482764}
+  _passiveButton: {fileID: 2127885465054482764}
   _iconImage: {fileID: 2127885463941728515}
   _bordersImage: {fileID: 2127885464099155800}
   _displayNameText: {fileID: 2127885463954083985}

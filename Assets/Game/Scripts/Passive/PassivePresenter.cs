@@ -75,9 +75,4 @@ public class PassivePresenter : IPassivePresenter
     {
         _passiveView.BordersActive(false);
     }
-
-    public static Passive[] GetAllPassives()
-    {
-        return _passives.ToArray();
-    }
 }
