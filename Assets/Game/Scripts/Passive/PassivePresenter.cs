@@ -1,12 +1,8 @@
 using System.Collections.Generic;
-using UnityEngine;
 
-public class PassivePresenter : MonoBehaviour, IPassivePresenter
+public class PassivePresenter : IPassivePresenter
 {
     public static List<Passive> Passives { get; private set; }
-
-    [SerializeField] private PassiveView _passiveViewLink;
-    [SerializeField] private PassiveData _passiveData;
 
     private IPassiveView _passiveView;
     private Passive _passive;
@@ -14,10 +10,10 @@ public class PassivePresenter : MonoBehaviour, IPassivePresenter
     public IPassiveView PassiveView { get { return _passiveView; } }
     public Passive Passive { get { return _passive; } }
 
-    private void Awake()
+    public PassivePresenter(IPassiveView passiveView, Passive passive)
     {
-        _passiveView = _passiveViewLink;
-        _passive = new Passive(_passiveData.Index, _passiveData.IsBase, _passiveData.PointCost, _passiveData.Modifier);
+        _passiveView = passiveView;
+        _passive = passive;
 
         if (Passives == null) Passives = new List<Passive>();
         if (Passives.Contains(_passive) == false) Passives.Add(_passive);
@@ -25,27 +21,26 @@ public class PassivePresenter : MonoBehaviour, IPassivePresenter
 
     public void Initialize()
     {
-        List<Passive> linkedPassives = new List<Passive>();
-
-        foreach (string index in _passiveData.IndexLinkedPassives)
+        foreach (Passive passive in Passives)
         {
-            foreach(Passive passive in Passives)
+            if (passive != _passive)
             {
-                if (index == passive.Index)
+                foreach (string index in passive.IndexLinkedPassives)
                 {
-                    linkedPassives.Add(passive);
-                    break;
+                    if (index == _passive.Index)
+                    {
+                        _passive.AddLinkedPassive(passive);
+                        passive.AddLinkedPassive(_passive);
+                        break;
+                    }
                 }
             }
         }
-
-        _passive.LinkedPassives = linkedPassives.ToArray();
-        if (_passive.IsBase) _passive.Learn();
     }
 
     public void Enable()
     {
-        _passiveView.SetDisplayName(_passiveData.DisplayName);
+        _passiveView.SetDisplayName(_passive.DisplayName);
         _passiveView.BordersActive(false);
         _passive.OnLearned += OnPassiveLearned;
         _passive.OnForgotten += OnPassiveForgotten;

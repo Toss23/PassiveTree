@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Passive_4
   m_EditorClassIdentifier: 
   _index: passive_4
-  _displayName: Passive 4
+  _displayName: 4
   _isBase: 0
   _pointCost: 2
   _modifierType: 0

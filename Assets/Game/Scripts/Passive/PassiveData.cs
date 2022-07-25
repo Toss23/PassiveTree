@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Passive Data", menuName = "Passive Tree/Create Passive")]
-public class PassiveData : ScriptableObject
+public class PassiveData : ScriptableObject, IPassiveData
 {
     [SerializeField] private string _index;
     [SerializeField] private string _displayName;

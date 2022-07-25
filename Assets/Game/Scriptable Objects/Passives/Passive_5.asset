@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Passive_5
   m_EditorClassIdentifier: 
   _index: passive_5
-  _displayName: Passive 5
+  _displayName: 5
   _isBase: 0
   _pointCost: 1
   _modifierType: 0

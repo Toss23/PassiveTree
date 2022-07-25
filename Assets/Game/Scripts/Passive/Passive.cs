@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Passive
 {
@@ -9,27 +8,39 @@ public class Passive
     public event Action OnSelect;
     public event Action OnDeselect;
 
+    private string _displayName;
     private string _index;
     private bool _isBase;
     private bool _isLearned;
     private int _pointCost;
     private Modifier _modifier;
-    private Passive[] _linkedPassives;
+    private List<Passive> _linkedPassives;
+    private string[] _indexLinkedPassives;
 
+    public string DisplayName { get { return _displayName; } }
     public string Index { get { return _index; } }
     public bool IsBase { get { return _isBase; } }
     public bool IsLearned { get { return _isLearned; } }
     public int PointCost { get { return _pointCost; } }
     public Modifier Modifier { get { return _modifier; } }
-    public Passive[] LinkedPassives { set { _linkedPassives = value; } }
+    public string[] IndexLinkedPassives { get { return _indexLinkedPassives; } }
 
-    public Passive(string index, bool isBase, int pointCost, Modifier modifier)
+    public Passive(IPassiveData passiveData)
     {
-        _index = index;
-        _isBase = isBase;
-        _isLearned = isBase;
-        _pointCost = isBase ? 0 : pointCost;
-        _modifier = modifier;
+        _displayName = passiveData.DisplayName;
+        _index = passiveData.Index;
+        _isBase = passiveData.IsBase;
+        _isLearned = passiveData.IsBase;
+        _pointCost = _isBase ? 0 : passiveData.PointCost;
+        _modifier = passiveData.Modifier;
+        _linkedPassives = new List<Passive>();
+        _indexLinkedPassives = passiveData.IndexLinkedPassives;
+    }
+
+    public void AddLinkedPassive(Passive passive)
+    {
+        if (_linkedPassives.Contains(passive) == false)
+            _linkedPassives.Add(passive);
     }
 
     public void Learn()
@@ -73,7 +84,6 @@ public class Passive
         {
             if (passive._isBase == false && passive._isLearned)
             {
-                Debug.Log("Try: " + passive._index);
                 List<Passive> previousPassives = new List<Passive>();
                 previousPassives.Add(this);
                 bool havePathToBase = HaveLinkWithBase(passive, previousPassives);
@@ -91,14 +101,11 @@ public class Passive
             if (linkedPassive._isBase)
                 return true;
 
-            foreach (Passive previousPassive in previousPassives)
+            if (linkedPassive._isLearned && previousPassives.Contains(linkedPassive) == false)
             {
-                if (linkedPassive != previousPassive & linkedPassive._isLearned)
-                {
-                    previousPassives.Add(passive);
-                    if (HaveLinkWithBase(linkedPassive, previousPassives))
-                        return true;
-                }
+                previousPassives.Add(passive);
+                if (HaveLinkWithBase(linkedPassive, previousPassives))
+                    return true;
             }
         }
         return false;

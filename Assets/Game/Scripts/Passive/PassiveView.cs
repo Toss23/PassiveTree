@@ -10,13 +10,24 @@ public class PassiveView : MonoBehaviour, IPassiveView
 
     public event Action OnClick;
 
+    [SerializeField] private PassiveData _passiveData;
+    [Space(10)]
     [SerializeField] private Button _button;
     [SerializeField] private Image _iconImage;
     [SerializeField] private Image _bordersImage;
     [SerializeField] private TMP_Text _displayNameText;
 
+    private PassivePresenter _passivePresenter;
+
+    public PassivePresenter PassivePresenter { get { return _passivePresenter; } }
+
     private void Awake()
     {
+        Passive passive = new Passive(_passiveData);
+        _passivePresenter = new PassivePresenter(this, passive);
+        _passivePresenter.Initialize();
+        _passivePresenter.Enable();
+
         _button.onClick.AddListener(OnClickView);
     }
 
