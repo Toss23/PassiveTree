@@ -1,12 +1,16 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PassiveView : MonoBehaviour, IPassiveView
 {
-    private readonly Color _learnedColor = Color.green;
-    private readonly Color _notLearnedColor = Color.white;
+    private readonly Dictionary<IconColor, Color> _iconColor = new Dictionary<IconColor, Color>()
+    {
+        { IconColor.OnLearnedColor, Color.green },
+        { IconColor.OnNotLearnedColor, Color.white }
+    };
 
     public event Action OnClick;
 
@@ -38,15 +42,7 @@ public class PassiveView : MonoBehaviour, IPassiveView
 
     public void SetIconColor(IconColor iconColor)
     {
-        switch (iconColor)
-        {
-            case IconColor.OnLearnedColor:
-                _iconImage.color = _learnedColor;
-                break;
-            case IconColor.OnNotLearnedColor:
-                _iconImage.color = _notLearnedColor;
-                break;
-        }
+        _iconImage.color = _iconColor[iconColor];
     }
 
     public void BordersActive(bool active)
