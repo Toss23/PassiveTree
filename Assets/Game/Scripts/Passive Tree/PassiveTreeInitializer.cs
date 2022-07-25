@@ -9,22 +9,13 @@ public class PassiveTreeInitializer : MonoBehaviour
     private PassiveTree _passiveTree;
     private PassiveTreePresenter _passiveTreePresenter;
 
-    // Обычно при использовании MVP view создает presenter-а, но в данном случае я решил не усложнять код PassiveTreeView
-    // и сделать его чище, отделив создание presenter-а от view
+    // Обычно, при использовании MVP, View создает Presenter-а, но в данном случае я решил не усложнять код PassiveTreeView
     private void Start()
     {
-        PassivePresenter[] passivePresenters = new PassivePresenter[_passiveViews.Length];
-        for (int i = 0; i < passivePresenters.Length; i++)
-        {
-            passivePresenters[i] = _passiveViews[i].PassivePresenter;
-        }
-
-        Passive[] passives = PassivePresenter.Passives.ToArray();
-
         _character = new Character();
-        _passiveTree = new PassiveTree(passives, _character);
+        _passiveTree = new PassiveTree(PassivePresenter.GetAllPassives(), _character);
 
-        _passiveTreePresenter = new PassiveTreePresenter(_passiveTree, _passiveTreeView, passivePresenters);
+        _passiveTreePresenter = new PassiveTreePresenter(_passiveTree, _passiveTreeView, _passiveViews);
         _passiveTreePresenter.Enable();
     }
 }

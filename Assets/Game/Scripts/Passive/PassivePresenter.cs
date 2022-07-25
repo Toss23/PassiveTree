@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public class PassivePresenter : IPassivePresenter
 {
-    public static List<Passive> Passives { get; private set; }
+    private static List<Passive> _passives;
 
     private IPassiveView _passiveView;
     private Passive _passive;
@@ -15,13 +15,13 @@ public class PassivePresenter : IPassivePresenter
         _passiveView = passiveView;
         _passive = passive;
 
-        if (Passives == null) Passives = new List<Passive>();
-        if (Passives.Contains(_passive) == false) Passives.Add(_passive);
+        if (_passives == null) _passives = new List<Passive>();
+        if (_passives.Contains(_passive) == false) _passives.Add(_passive);
     }
 
     public void Initialize()
     {
-        foreach (Passive passive in Passives)
+        foreach (Passive passive in _passives)
         {
             if (passive != _passive)
             {
@@ -74,5 +74,10 @@ public class PassivePresenter : IPassivePresenter
     private void OnDeselectPassive()
     {
         _passiveView.BordersActive(false);
+    }
+
+    public static Passive[] GetAllPassives()
+    {
+        return _passives.ToArray();
     }
 }

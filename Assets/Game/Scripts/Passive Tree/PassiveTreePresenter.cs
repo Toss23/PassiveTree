@@ -2,20 +2,20 @@ public class PassiveTreePresenter
 {
     private PassiveTree _passiveTree;
     private IPassiveTreeView _passiveTreeView;
-    private IPassivePresenter[] _passivePresenters;
+    private IPassiveView[] _passiveViews;
 
-    public PassiveTreePresenter(PassiveTree passiveTree, IPassiveTreeView passiveTreeView, IPassivePresenter[] passivePresenters)
+    public PassiveTreePresenter(PassiveTree passiveTree, IPassiveTreeView passiveTreeView, IPassiveView[] passiveViews)
     {
         _passiveTree = passiveTree;
         _passiveTreeView = passiveTreeView;
-        _passivePresenters = passivePresenters;
+        _passiveViews = passiveViews;
     }
 
     public void Enable()
     {
-        foreach (PassivePresenter passivePresenter in _passivePresenters)
+        foreach (IPassiveView passiveView in _passiveViews)
         {
-            passivePresenter.PassiveView.OnClick += () => OnClickPassive(passivePresenter.Passive);
+            passiveView.OnClick += () => SelectPassive(passiveView.PassivePresenter.Passive);
         }
 
         _passiveTreeView.OnClickLearn += LearnSelectedPassive;
@@ -34,9 +34,9 @@ public class PassiveTreePresenter
 
     public void Disable()
     {
-        foreach (PassivePresenter passivePresenter in _passivePresenters)
+        foreach (IPassiveView passiveView in _passiveViews)
         {
-            passivePresenter.PassiveView.OnClick -= () => OnClickPassive(passivePresenter.Passive);
+            passiveView.OnClick -= () => SelectPassive(passiveView.PassivePresenter.Passive);
         }
 
         _passiveTreeView.OnClickLearn -= LearnSelectedPassive;
@@ -66,7 +66,7 @@ public class PassiveTreePresenter
         UpdatePassiveTreeViewButtons(_passiveTree.SelectedPassive);
     }
 
-    private void OnClickPassive(Passive passive)
+    private void SelectPassive(Passive passive)
     {
         _passiveTree.SelectPassive(passive);
         UpdatePassiveTreeViewButtons(passive);
