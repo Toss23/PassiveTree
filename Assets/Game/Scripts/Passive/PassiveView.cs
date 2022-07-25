@@ -32,7 +32,7 @@ public class PassiveView : MonoBehaviour, IPassiveView
         _passivePresenter.Initialize();
         _passivePresenter.Enable();
 
-        _button.onClick.AddListener(OnClickView);
+        _button.onClick.AddListener(() => OnClick());
     }
 
     public void SetDisplayName(string displayName)
@@ -48,10 +48,5 @@ public class PassiveView : MonoBehaviour, IPassiveView
     public void BordersActive(bool active)
     {
         _bordersImage.gameObject.SetActive(active);
-    }
-
-    private void OnClickView()
-    {
-        OnClick?.Invoke();
     }
 }
