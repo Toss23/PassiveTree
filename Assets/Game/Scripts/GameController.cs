@@ -22,7 +22,6 @@ public class GameController : MonoBehaviour
         // Создаем модель персонажа и дерева
         _character = new Character();
         _passiveTree = new PassiveTree(passives, _character);
-        _passiveTree.Initialize();
 
         // Создаем презентер для связи дерева с интерфейсом
         _passiveTreePresenter = new PassiveTreePresenter(_passiveTree, _passiveTreeView, _passivePresenters);

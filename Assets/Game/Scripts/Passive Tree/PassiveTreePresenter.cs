@@ -18,13 +18,18 @@ public class PassiveTreePresenter
             passivePresenter.PassiveView.OnClick += () => OnClickPassive(passivePresenter.Passive);
         }
 
-        ChangeSkillPointText(_passiveTree.SkillPoints);
-
-        _passiveTreeView.OnClickLearn += OnClickLearn;
-        _passiveTreeView.OnClickForgot += OnClickForgot;
-        _passiveTreeView.OnClickForgotAll += OnClickForgotAll;
+        _passiveTreeView.OnClickLearn += LearnSelectedPassive;
+        _passiveTreeView.OnClickForgot += ForgotSelectedPassive;
+        _passiveTreeView.OnClickForgotAll += ForgotAllPassives;
         _passiveTreeView.OnClickAddSkillPoint += AddSkillPassive;
-        _passiveTree.OnSkillPointsChanged += ChangeSkillPointText;
+        _passiveTree.OnSkillPointsChanged += ChangeSkillPointsText;
+        _passiveTree.OnSelectedPassiveChanged += ChangeSkillPointsCostText;
+
+        _passiveTreeView.LearnPassiveButtonEnable(false);
+        _passiveTreeView.ForgotPassiveButtonEnable(false);
+
+        ChangeSkillPointsText(_passiveTree.SkillPoints);
+        _passiveTree.DeselectPassive();
     }
 
     public void Disable()
@@ -34,40 +39,63 @@ public class PassiveTreePresenter
             passivePresenter.PassiveView.OnClick -= () => OnClickPassive(passivePresenter.Passive);
         }
 
-        _passiveTreeView.OnClickLearn -= OnClickLearn;
-        _passiveTreeView.OnClickForgot -= OnClickForgot;
-        _passiveTreeView.OnClickForgotAll -= OnClickForgotAll;
+        _passiveTreeView.OnClickLearn -= LearnSelectedPassive;
+        _passiveTreeView.OnClickForgot -= ForgotSelectedPassive;
+        _passiveTreeView.OnClickForgotAll -= ForgotAllPassives;
         _passiveTreeView.OnClickAddSkillPoint -= AddSkillPassive;
-        _passiveTree.OnSkillPointsChanged -= ChangeSkillPointText;
+        _passiveTree.OnSkillPointsChanged -= ChangeSkillPointsText;
+        _passiveTree.OnSelectedPassiveChanged -= ChangeSkillPointsCostText;
     }
 
-    private void ChangeSkillPointText(int skillPoints)
+    private void ChangeSkillPointsText(int skillPoints)
     {
-        _passiveTreeView.SetSkillPointText(skillPoints + " Skill Points");
+        _passiveTreeView.SetSkillPointsText(skillPoints + " SP");
+    }
+
+    private void ChangeSkillPointsCostText(Passive passive)
+    {
+        if (passive != null)
+            _passiveTreeView.SetSkillPointsCostText("Require " + passive.PointCost + " SP");
+        else
+            _passiveTreeView.SetSkillPointsCostText("");
     }
 
     private void AddSkillPassive()
     {
         _passiveTree.AddSkillPoint(1);
+        UpdatePassiveTreeViewButtons(_passiveTree.SelectedPassive);
     }
 
     private void OnClickPassive(Passive passive)
     {
         _passiveTree.SelectPassive(passive);
+        UpdatePassiveTreeViewButtons(passive);
     }
 
-    private void OnClickLearn()
+    private void LearnSelectedPassive()
     {
         _passiveTree.LearnPassive();
+        UpdatePassiveTreeViewButtons(_passiveTree.SelectedPassive);
     }
 
-    private void OnClickForgot()
+    private void ForgotSelectedPassive()
     {
         _passiveTree.ForgotPassive();
+        UpdatePassiveTreeViewButtons(_passiveTree.SelectedPassive);
     }
 
-    private void OnClickForgotAll()
+    private void ForgotAllPassives()
     {
         _passiveTree.ForgotAllPassives();
+        UpdatePassiveTreeViewButtons(_passiveTree.SelectedPassive);
+    }
+
+    private void UpdatePassiveTreeViewButtons(Passive passive)
+    {
+        if (passive != null)
+        {
+            _passiveTreeView.LearnPassiveButtonEnable(passive.CanBeLearned(_passiveTree.SkillPoints));
+            _passiveTreeView.ForgotPassiveButtonEnable(passive.CanBeForgotten());
+        }
     }
 }

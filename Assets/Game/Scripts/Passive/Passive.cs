@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Passive
 {
@@ -13,8 +15,6 @@ public class Passive
     private int _pointCost;
     private Modifier _modifier;
     private Passive[] _linkedPassives;
-    private int _weight;
-    private bool _initialized;
 
     public string Index { get { return _index; } }
     public bool IsBase { get { return _isBase; } }
@@ -30,33 +30,6 @@ public class Passive
         _isLearned = isBase;
         _pointCost = isBase ? 0 : pointCost;
         _modifier = modifier;
-        _weight = 0;
-    }
-
-    // Здесь инициализируются веса, это нужно чтобы в дальнейшем понимать останиться ли свзять дерева с началом
-    // при отмене изучения пассивки
-    public void Initialize()
-    {
-        _initialized = true;
-
-        // Первый проход чтобы задать веса связанным пассивкам
-        foreach (Passive passive in _linkedPassives)
-        {
-            if (passive.IsBase == false & passive._weight == 0)
-            {
-                if (_isBase)
-                    passive._weight = 1;
-                else
-                    passive._weight += _weight + 1;
-            }
-        }
-
-        // Второй проход чтобы связанные пассивки задали веса своим связанным пассивкам если это возможно
-        foreach (Passive passive in _linkedPassives)
-        {
-            if (passive.IsBase == false & passive._initialized == false)
-                passive.Initialize();
-        }
     }
 
     public void Learn()
@@ -71,9 +44,9 @@ public class Passive
         OnForgotten?.Invoke();
     }
 
-    public bool CanBeLearned()
+    public bool CanBeLearned(int haveSkillPoints)
     {
-        if (_isLearned == false)
+        if (_isLearned == false & haveSkillPoints >= _pointCost)
         {
             if (_isBase)
             {
@@ -91,30 +64,44 @@ public class Passive
         return false;
     }
 
-    // Если связанные изученные пассивки имеют связи с пассивками меньшего веса, то можно забыть
-    // Эта проверка позволяет понять разрушиться ли связь между остальными пассивками и началом дерева
     public bool CanBeForgotten()
     {
+        if (_isLearned == false | _isBase)
+            return false;
+
         foreach (Passive passive in _linkedPassives)
         {
-            if (passive._isLearned & passive._weight > _weight)
+            if (passive._isBase == false && passive._isLearned)
             {
-                bool haveLinkWithBase = false;
-
-                foreach (Passive linkedPassive in passive._linkedPassives)
-                {
-                    if (linkedPassive != this & linkedPassive._isLearned & linkedPassive._weight < passive._weight)
-                    {
-                        haveLinkWithBase = true;
-                        break;
-                    }
-                }
-
-                if (haveLinkWithBase == false)
+                Debug.Log("Try: " + passive._index);
+                List<Passive> previousPassives = new List<Passive>();
+                previousPassives.Add(this);
+                bool havePathToBase = HaveLinkWithBase(passive, previousPassives);
+                if (havePathToBase == false)
                     return false;
             }
         }
         return true;
+    }
+
+    private bool HaveLinkWithBase(Passive passive, List<Passive> previousPassives)
+    {
+        foreach (Passive linkedPassive in passive._linkedPassives)
+        {
+            if (linkedPassive._isBase)
+                return true;
+
+            foreach (Passive previousPassive in previousPassives)
+            {
+                if (linkedPassive != previousPassive & linkedPassive._isLearned)
+                {
+                    previousPassives.Add(passive);
+                    if (HaveLinkWithBase(linkedPassive, previousPassives))
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void Select()

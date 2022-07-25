@@ -15,7 +15,7 @@ MonoBehaviour:
   _index: passive_2
   _displayName: Passive 2
   _isBase: 0
-  _pointCost: 1
+  _pointCost: 2
   _modifierType: 0
   _modifierValue: 0
   _indexLinkedPassives:

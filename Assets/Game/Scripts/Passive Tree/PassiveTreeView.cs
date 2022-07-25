@@ -15,6 +15,7 @@ public class PassiveTreeView : MonoBehaviour, IPassiveTreeView
     [SerializeField] private Button _forgotAllPassivesButton;
     [SerializeField] private Button _addSkillPointButton;
     [SerializeField] private TMP_Text _skillPointsText;
+    [SerializeField] private TMP_Text _skillPointsCostText;
 
     private void Awake()
     {
@@ -24,8 +25,23 @@ public class PassiveTreeView : MonoBehaviour, IPassiveTreeView
         _addSkillPointButton.onClick.AddListener(() => OnClickAddSkillPoint());
     }
 
-    public void SetSkillPointText(string text)
+    public void SetSkillPointsText(string text)
     {
         _skillPointsText.text = text;
+    }
+
+    public void SetSkillPointsCostText(string text)
+    {
+        _skillPointsCostText.text = text;
+    }
+
+    public void LearnPassiveButtonEnable(bool enable)
+    {
+        _learnPassiveButton.interactable = enable;
+    }
+
+    public void ForgotPassiveButtonEnable(bool enable)
+    {
+        _forgotPassiveButton.interactable = enable;
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class PassiveTree
 {
     public event Action<int> OnSkillPointsChanged;
+    public event Action<Passive> OnSelectedPassiveChanged;
 
     private Passive[] _passives;
     private Character _character;
@@ -11,6 +12,7 @@ public class PassiveTree
     private List<Passive> _passivesLearned;
     private int _skillPoints;
 
+    public Passive SelectedPassive { get { return _selectedPassive; } }
     public int SkillPoints { get { return _skillPoints; } }
 
     public PassiveTree(Passive[] passives, Character character)
@@ -20,25 +22,24 @@ public class PassiveTree
         _passivesLearned = new List<Passive>();
     }
 
-    public void Initialize()
-    {
-        foreach (Passive passive in _passives)
-        {
-            if (passive.IsBase)
-                passive.Initialize();
-        }
-    }
-
     public void SelectPassive(Passive passive)
     {
         _selectedPassive?.Deselect();
         _selectedPassive = passive;
         _selectedPassive.Select();
+        OnSelectedPassiveChanged?.Invoke(_selectedPassive);
+    }
+
+    public void DeselectPassive()
+    {
+        _selectedPassive?.Deselect();
+        _selectedPassive = null;
+        OnSelectedPassiveChanged?.Invoke(_selectedPassive);
     }
 
     public void LearnPassive()
     {
-        if (_selectedPassive != null && _selectedPassive.CanBeLearned())
+        if (_selectedPassive != null && _selectedPassive.CanBeLearned(_skillPoints))
         {
             if (_selectedPassive.IsBase)
             {

@@ -7,5 +7,8 @@ public interface IPassiveTreeView
     public event Action OnClickForgotAll;
     public event Action OnClickAddSkillPoint;
 
-    public void SetSkillPointText(string text);
+    public void SetSkillPointsText(string text);
+    public void SetSkillPointsCostText(string text);
+    public void LearnPassiveButtonEnable(bool enable);
+    public void ForgotPassiveButtonEnable(bool enable);
 }
