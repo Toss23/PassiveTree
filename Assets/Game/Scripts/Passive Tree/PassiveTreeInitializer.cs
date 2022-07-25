@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GameController : MonoBehaviour
+public class PassiveTreeInitializer : MonoBehaviour
 {
     [SerializeField] private PassiveTreeView _passiveTreeView;
     [SerializeField] private PassiveView[] _passiveViews;
@@ -21,11 +21,9 @@ public class GameController : MonoBehaviour
 
         Passive[] passives = PassivePresenter.Passives.ToArray();
 
-        // Создаем модель персонажа и дерева
         _character = new Character();
         _passiveTree = new PassiveTree(passives, _character);
 
-        // Создаем презентер для связи дерева с интерфейсом
         _passiveTreePresenter = new PassiveTreePresenter(_passiveTree, _passiveTreeView, passivePresenters);
         _passiveTreePresenter.Enable();
     }
