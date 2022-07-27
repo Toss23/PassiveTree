@@ -43,6 +43,16 @@ public class Passive
             _linkedPassives.Add(passive);
     }
 
+    public void Select()
+    {
+        OnSelect?.Invoke();
+    }
+
+    public void Deselect()
+    {
+        OnDeselect?.Invoke();
+    }
+
     public void Learn()
     {
         _isLearned = true;
@@ -106,15 +116,5 @@ public class Passive
             }
         }
         return false;
-    }
-
-    public void Select()
-    {
-        OnSelect?.Invoke();
-    }
-
-    public void Deselect()
-    {
-        OnDeselect?.Invoke();
     }
 }
